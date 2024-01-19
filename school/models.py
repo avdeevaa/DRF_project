@@ -19,10 +19,36 @@ class Lesson(models.Model):  #Generics
     image = models.ImageField(upload_to='school/images/', verbose_name='превью(картинка)', null=True, blank=True)
     url = models.URLField(verbose_name='ссылка на видео')
 
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lesson', verbose_name='lesson', null=True, blank=True)  # чтобы привязывалось
+
     def __str__(self):
         return f'{self.title} -- {self.description}'
 
     class Meta:
         verbose_name = "урок"
+
+
+class Payments(models.Model):
+
+    PAYMENT_METHODS = [
+        ('cash', 'CASH'),
+        ('card', 'CARD'),
+    ]
+
+    user = models.CharField(max_length=50, verbose_name='пользователь')  # предполагаю, потом нужно будет связать с пользователем из Users
+    payment_date = models.DateField(verbose_name='дата оплаты', auto_now=True)
+
+    course_paid = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course', verbose_name='course', blank=True, null=True)
+    lesson_paid = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='lesson', verbose_name='lesson', blank=True, null=True)
+
+    amount = models.PositiveIntegerField(verbose_name='сумма оплаты')
+    payment_method = models.CharField(verbose_name='способ оплаты', choices=PAYMENT_METHODS, default='card')
+
+    def __str__(self):
+        return f'{self.user} paid {self.amount}'
+
+    class Meta:
+        verbose_name = "платеж"
+        verbose_name_plural = "платежи"
 
 
