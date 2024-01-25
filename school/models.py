@@ -1,10 +1,14 @@
 from django.db import models
 
+from config import settings
+
 
 class Course(models.Model):  # ViewSet
     title = models.CharField(max_length=300, verbose_name="название")
     image = models.ImageField(upload_to='school/images/', verbose_name='превью(картинка)', null=True, blank=True)
     description = models.TextField(verbose_name='описание')
+
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
@@ -20,6 +24,7 @@ class Lesson(models.Model):  #Generics
     url = models.URLField(verbose_name='ссылка на видео')
 
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lesson', verbose_name='lesson', null=True, blank=True)  # чтобы привязывалось
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.title} -- {self.description}'

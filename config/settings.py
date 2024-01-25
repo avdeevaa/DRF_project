@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django_filters',
     'users',
     'school',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -138,3 +139,14 @@ AUTH_USER_MODEL = "users.User"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 LOGIN_URL = "/users/"
+
+
+# Настройки JWT-токенов
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ]
+}
