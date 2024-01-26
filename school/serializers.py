@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from school.models import Course, Lesson, Payments
+from school.models import Course, Lesson, Payments, Subscription
+from school.validators import URLValidator
 
 
 class LessonSerializer(serializers.ModelSerializer):  # Generics
@@ -8,6 +9,7 @@ class LessonSerializer(serializers.ModelSerializer):  # Generics
     class Meta:
         model = Lesson
         fields = '__all__'
+        validators = [URLValidator(field='url')]
 
 
 class PaymentsSerializer(serializers.ModelSerializer):  # Generics
@@ -15,6 +17,20 @@ class PaymentsSerializer(serializers.ModelSerializer):  # Generics
     class Meta:
         model = Payments
         fields = '__all__'
+
+
+class SubscriptionSerializer(serializers.ModelSerializer):  # Generics
+
+    class Meta:
+        model = Subscription
+        fields = '__all__'
+        validators = [
+            serializers.UniqueTogetherValidator(
+                queryset=Subscription.objects.all(),
+                fields=['user', 'course'],
+                message='User already subscribed to this course.'
+            )
+        ]
 
 
 class CourseSerializer(serializers.ModelSerializer):  # ViewSet

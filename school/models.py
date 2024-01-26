@@ -1,6 +1,7 @@
 from django.db import models
 
 from config import settings
+from users.models import User
 
 
 class Course(models.Model):  # ViewSet
@@ -55,5 +56,19 @@ class Payments(models.Model):
     class Meta:
         verbose_name = "платеж"
         verbose_name_plural = "платежи"
+
+
+class Subscription(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="user_subscribed", related_name='user_subscribed')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="course_subscribed", related_name='course_subscribed')
+    subscription = models.BooleanField(verbose_name="Подписка?", default=False)
+
+    def __str__(self):
+        return f'{self.user} and {self.course}'
+
+    class Meta:
+        unique_together = ['user', 'course']
+        verbose_name = "платеж"
 
 
