@@ -15,104 +15,49 @@ User = get_user_model()
 class LessonTestCase(APITestCase):
 
     def setUp(self):
-        pass
+        self.lesson_data = {
+            "title": "test lesson",
+            "description": "test description",
+            "url": "https://my.sky.pro/student-cabinet/stream-lesson/52714/theory/7",
+        }
+        self.lesson = Lesson.objects.create(**self.lesson_data)
 
     def test_create_lesson(self):
-        """Create Lesson"""
-        data = {
-            "title": "test lesson",
-            "description": "test description",
-            "url": "https://my.sky.pro/student-cabinet/stream-lesson/52714/theory/7",
-        }
-
-        response = self.client.post(
-            "/lesson/create/",
-            data=data,
-            format='json'
-        )
-        # print(response.json())
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_201_CREATED
-        )
-
-        self.assertEqual(
-            response.json(),
-            {'id': 1, 'title': 'test lesson', 'description': 'test description', 'image': None,
-             'url': 'https://my.sky.pro/student-cabinet/stream-lesson/52714/theory/7', 'course': None, 'owner': None}
-
-        )
-
-        self.assertTrue(
-            Lesson.objects.all().exists()
-        )
+        response = self.client.post("/lesson/create/", data=self.lesson_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.json(), {
+            'id': 2,  # Проверьте, что возвращается правильный id урока
+            'title': 'test lesson',
+            'description': 'test description',
+            'image': None,  # Добавлен ключ 'image'
+            'url': 'https://my.sky.pro/student-cabinet/stream-lesson/52714/theory/7',
+            'course': None,
+            'owner': None
+        })
+        self.assertTrue(Lesson.objects.filter(title='test lesson').exists())
 
     def test_read_lesson(self):
-        """Read Lesson"""
-        data = {
-            "title": "test lesson",
-            "description": "test description",
-            "url": "https://my.sky.pro/student-cabinet/stream-lesson/52714/theory/7",
-        }
-
-        response = self.client.get(
-            "/lesson/",
-            data=data,
-            format='json'
-        )
-        #print(response.json())
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_200_OK
-        )
-
-        self.assertFalse(
-            Lesson.objects.all().exists()
-        )
+        response = self.client.get("/lesson/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(Lesson.objects.filter(title='test lesson').exists())
 
     def test_update_lesson(self):
-        """Update Lesson"""
-        data = {
-            "title": "test lesson",
-            "description": "test description",
-            "url": "https://my.sky.pro/student-cabinet/stream-lesson/52714/theory/7",
+        updated_data = {
+            "title": "updated lesson",
+            "description": "updated description",
+            "url": "https://my.sky.pro/student-cabinet/stream-lesson/52714/theory/8",
         }
-
-        response = self.client.get(
-            "/lesson/",
-            data=data,
-            format='json'
-        )
-        # print(response.json())
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_200_OK
-        )
-
-        self.assertFalse(
-            Lesson.objects.all().exists()
-        )
+        response = self.client.put(f"/lesson/update/{self.lesson.id}/", data=updated_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.lesson.refresh_from_db()
+        self.assertEqual(self.lesson.title, 'updated lesson')
+        self.assertEqual(self.lesson.description, 'updated description')
+        self.assertEqual(self.lesson.url, 'https://my.sky.pro/student-cabinet/stream-lesson/52714/theory/8')
 
     def test_destroy_lesson(self):
-        """Update Lesson"""
-        data = {
-            "title": "test lesson",
-            "description": "test description",
-            "url": "https://my.sky.pro/student-cabinet/stream-lesson/52714/theory/7",
-        }
-
-        response = self.client.delete(
-            "/lesson/delete/1/",
-            data=data,
-            format='json'
-        )
-        # print(response.json())
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_404_NOT_FOUND)
-        self.assertFalse(
-            Lesson.objects.all().exists()
-        )
+        response = self.client.delete(f"/lesson/delete/{self.lesson.id}/")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Lesson.objects.filter(title='test lesson').exists())
 
 
 #  SECOND PART
