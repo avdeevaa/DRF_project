@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'django_filters',
+    'django_celery_beat',
     'users',
     'school',
     'rest_framework_simplejwt',
@@ -152,3 +153,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ]
 }
+
+CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
+CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
