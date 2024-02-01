@@ -50,6 +50,11 @@ class Payments(models.Model):
     amount = models.PositiveIntegerField(verbose_name='сумма оплаты')
     payment_method = models.CharField(verbose_name='способ оплаты', choices=PAYMENT_METHODS, default='card')
 
+    # Нам нужно подключить stripe...
+    session_id = models.TextField(verbose_name='id сессии', null=True, blank=True)
+    is_paid = models.BooleanField(verbose_name='статус оплаты', default=False)
+    currency = models.CharField(max_length=10, default='RUB', verbose_name='валюта')
+
     def __str__(self):
         return f'{self.user} paid {self.amount}'
 
