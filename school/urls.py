@@ -5,7 +5,7 @@ from school.apps import SchoolConfig
 from school.views import CourseViewSet, LessonCreateAPIview, LessonListAPIview, LessonRetrieveAPIview, \
     LessonUpdateAPIview, LessonDestroyAPIview, PaymentsListAPIview, SubscriptionCreateAPIview, \
     SubscriptionUpdateAPIview, \
-    SubscriptionDestroyAPIview, PaymentsCreateAPIview, PaymentsRetrieveAPIview
+    SubscriptionDestroyAPIview, PaymentsCreateAPIview, PaymentsRetrieveAPIview, CourseUpdateAPIview
 
 app_name = SchoolConfig.name
 
@@ -27,4 +27,6 @@ urlpatterns = [
     path('subscr/create/', SubscriptionCreateAPIview.as_view(), name='create_subscr'),
     path('subscr/update/<int:pk>/', SubscriptionUpdateAPIview.as_view(), name='update_subscr'),
     path('subscr/delete/<int:pk>/', SubscriptionDestroyAPIview.as_view(), name='delete_subscr'),
+
+    path('course/update/<int:pk>/', CourseUpdateAPIview.as_view(), name='create_course'),
 ] + router.urls

@@ -9,6 +9,8 @@ class Course(models.Model):  # ViewSet
     image = models.ImageField(upload_to='school/images/', verbose_name='превью(картинка)', null=True, blank=True)
     description = models.TextField(verbose_name='описание')
 
+    new_description = models.TextField(verbose_name="description number two", default="New interesting description of the Course.")
+
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):

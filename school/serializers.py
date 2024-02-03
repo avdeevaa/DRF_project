@@ -41,6 +41,8 @@ class CourseSerializer(serializers.ModelSerializer):  # ViewSet
     # all_lesson = serializers.SerializerMethodField()  # it works
     all_lesson = LessonSerializer(source='lesson.all', many=True, read_only=True)  # alternative without funcs
 
+    new_description = serializers.CharField(source='description')
+
     class Meta:
         model = Course
         fields = '__all__'

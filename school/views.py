@@ -13,6 +13,8 @@ from school.serializers import CourseSerializer, LessonSerializer, PaymentsSeria
 import stripe
 from django.http import request
 
+from school.tasks import check_info_and_update
+
 
 class CourseViewSet(viewsets.ModelViewSet):  # ViewSet
     serializer_class = CourseSerializer
@@ -156,5 +158,15 @@ class SubscriptionDestroyAPIview(generics.DestroyAPIView):  # generics
     queryset = Subscription.objects.all()  # only queryset
     # permission_classes = [IsAuthenticated]
     permission_classes = [AllowAny]
+
+
+class CourseUpdateAPIview(generics.UpdateAPIView):  # generics
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+    permission_classes = [AllowAny]
+
+    def perform_update(self, serializer):
+        description = serializer.save()
+        check_info_and_update.delay()
 
 
