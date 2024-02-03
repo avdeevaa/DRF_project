@@ -1,10 +1,12 @@
-#  здесь мы создаем отложенную задачу,
-#  то есть добавьте асинхронную рассылку писем пользователям об обновлении материалов курса.
 from celery import shared_task
 from django.core.mail import send_mail
 
+from datetime import timedelta
+from django.utils import timezone
+
 from config import settings
 from school.models import Course
+from users.models import User
 
 
 @shared_task
@@ -25,4 +27,16 @@ def check_info_and_update():
             info.save()
             #  it works I'm so happy!!!
 
+# second part - раз в день запускается проверка, если пользователь был на сайте не позднее 30 дней.
 
+
+# @shared_task если оставить, будет в админке само, если нет, то надо добавлять через copy==copy reference
+def check_last_login():
+    """Фоновая задача, которая проверяет пользователей по дате последнего входа по полю last_login"""
+    today = timezone.now()
+    thirty_days_ago = today - timedelta(days=30)
+    for user in User.objects.all():
+        if user.last_login < thirty_days_ago:
+            user.is_active = False
+            print("Поменяли пользователя на неактивного.")
+            user.save()
