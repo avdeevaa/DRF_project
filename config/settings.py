@@ -90,7 +90,7 @@ DATABASES = {
         'USER': 'postgres', # Пользователь для подключения
         'PASSWORD': '12345', # Пароль для этого пользователя
         'HOST' : 'localhost',
-        'PORT' : '5432',
+        'PORT' : 'db',
     }
 }
 

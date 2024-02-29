@@ -4,9 +4,7 @@ WORKDIR/code
 
 COPY ./pyproject.toml /code/
 
-RUN poetry install
-
-RUN poetry shell
+RUN poetry install && poetry shell
 
 COPY . .
 
