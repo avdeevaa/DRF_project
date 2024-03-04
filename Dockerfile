@@ -1,9 +1,12 @@
 FROM python:3
 
-WORKDIR/code
+WORKDIR /code
+
+ENV POETRY_HOME=/bin/poetry
+ENV PATH="${POETRY_HOME}/bin/:${PATH}"
 
 RUN apt-get -y update && apt-get -y upgrade && \
-    apt-get -y install bash python3 python3-dev postresql-client && \
+    apt-get -y install bash python3 python3-dev postgresql postgresql-contrib && \
     rm -vrf /var/cache/apt/** && \
     curl -sSL https://install.python-poetry.org | python - && \
     poetry config virtualenvs.create false --local
